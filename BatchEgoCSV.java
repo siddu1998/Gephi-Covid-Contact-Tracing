@@ -66,14 +66,14 @@ public class BatchEgoCSV {
 
         Container container,container2;
     try {
-        File file_node = new File(getClass().getResource("/org/gephi/toolkit/demos/nodes_list.csv").toURI());
+        File file_node = new File(getClass().getResource("/org/gephi/toolkit/demos/graph_100000_1000000_nodes.csv").toURI());
         container = importController.importFile(file_node);
         container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);   //Force DIRECTED
         container.getLoader().setAllowAutoNode(true);  //create missing nodes
         container.getLoader().setEdgesMergeStrategy(EdgeMergeStrategy.SUM);
         container.getLoader().setAutoScale(true);
 
-        File file_edge = new File(getClass().getResource("/org/gephi/toolkit/demos/edges_list.csv").toURI());
+        File file_edge = new File(getClass().getResource("/org/gephi/toolkit/demos/edges_random_networkx.csv").toURI());
         container2 = importController.importFile(file_edge);
         container2.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED); 
         container2.getLoader().setAllowAutoNode(true);  //create missing nodes
@@ -93,7 +93,7 @@ public class BatchEgoCSV {
         FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
         
         UndirectedGraph graph = graphModel.getUndirectedGraphVisible();
-        System.out.println("Nodes: " + graph.getNodeCount() + " Edges: " + graph.getEdgeCount());
+        //System.out.println("Nodes: " + graph.getNodeCount() + " Edges: " + graph.getEdgeCount());
         //Rank size by centrality
         
         GraphDistance distance = new GraphDistance();
@@ -107,19 +107,9 @@ public class BatchEgoCSV {
         centralityTransformer.setMaxSize(30);
         appearanceController.transform(centralityRanking);
 
-        
-        //DS with all the node names
-        ArrayList<String> node_list = new ArrayList<String>();
-        for (Node n : graphModel.getGraph().getNodes())
-        {
-            String node_name = n.getAttribute("Id").toString();
-            node_list.add(node_name);             
-        }
-        
-
-        
-        //iterating over each node name
-        for(int node=0;node<node_list.size();node++)
+                
+    
+        for(Node node_ :graph.getNodes().toArray())
         {
         //Restoring graph from previous filters
         graph = graphModel.getUndirectedGraph();
@@ -128,10 +118,10 @@ public class BatchEgoCSV {
         //Ego filter
         EgoBuilder.EgoFilter egoFilter = new EgoBuilder.EgoFilter();
         
-        String query_node= node_list.get(node);
-        System.out.println(query_node);
+        String query_node_id= node_.getId().toString();
+        System.out.println(query_node_id);
         
-        egoFilter.setPattern(query_node); //Regex accepted
+        egoFilter.setPattern(query_node_id); //Regex accepted
         egoFilter.setDepth(2);
         Query queryEgo = filterController.createQuery(egoFilter);
         GraphView viewEgo = filterController.filter(queryEgo);
@@ -146,7 +136,7 @@ public class BatchEgoCSV {
         layout.resetPropertiesValues();
         layout.setOptimalDistance(200f);
         layout.initAlgo();
-        for (int i = 0; i < 100 && layout.canAlgo(); i++) {
+        for (int i = 0; i < 200 && layout.canAlgo(); i++) {
          layout.goAlgo();
         }
        
@@ -161,19 +151,19 @@ public class BatchEgoCSV {
         //prop.putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
         prop.putValue(PreviewProperty.EDGE_CURVED, Boolean.FALSE);
         prop.putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(Color.BLACK));
-        prop.putValue(PreviewProperty.EDGE_THICKNESS, new Float(4.0f));
+        prop.putValue(PreviewProperty.EDGE_THICKNESS, new Float(0.5f));
         //prop.putValue(PreviewProperty.NODE_LABEL_FONT, prop.getFontValue(PreviewProperty.NODE_LABEL_FONT).deriveFont(10));
             
-        Node primary_node = graph.getNode(query_node);
-        Color original_color=primary_node.getColor();
-        primary_node.setLabel("Me");
+        //Node primary_node = graph.getNode(query_node);
+        Color original_color=node_.getColor();
+        node_.setLabel("Me");
         
         
         ArrayList<Node> one_hop = new ArrayList<Node>();
         ArrayList<Node> second_hop = new ArrayList<Node>();
         //nodes in one hop of primary_node 
          
-        for (Node n :  graph.getNeighbors(primary_node).toArray())
+        for (Node n :  graph.getNeighbors(node_).toArray())
         {
             one_hop.add(n);
             n.setColor(new Color(0x588BAE));
@@ -181,10 +171,12 @@ public class BatchEgoCSV {
         
         for (Node oh : one_hop)
         {
+            
                 for(Node sh : graph.getNeighbors(oh))
                 {
                     if(one_hop.contains(sh)==false)
                     {
+                        
                         sh.setColor(new Color(0xC2DFFF));
                     }
                 
@@ -192,14 +184,14 @@ public class BatchEgoCSV {
         }
         
         
-        primary_node.setColor(new Color(0x8B008B));
+        node_.setColor(new Color(0x8B008B));
         
      
         
         ExportController ec = Lookup.getDefault().lookup(ExportController.class);
         
         try {
-            String path = "/home/sid/Desktop/CODE/Internship-Indian-Institute-of-Science/COVID IISc/gephi_graphs/"+query_node+"_curve"+".png";
+            String path = "/home/sid/Desktop/CODE/Internship-Indian-Institute-of-Science/COVID IISc/gephi_graphs/"+node_.getId().toString()+"_curve"+".png";
             ec.exportFile(new File(path));
 
         } catch (IOException ex) {
@@ -207,7 +199,7 @@ public class BatchEgoCSV {
            return;
         }
 
-       primary_node.setLabel((""));
+       node_.setLabel((""));
        
        System.out.println("-----");
         }
