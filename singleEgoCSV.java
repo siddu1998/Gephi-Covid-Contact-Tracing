@@ -53,6 +53,9 @@ import sun.font.FontScaler;
 public class singleEgoCSV {
     
      public void script() {
+
+
+            
         //Init a project - and therefore a workspace
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         pc.newProject();
@@ -160,29 +163,29 @@ public class singleEgoCSV {
         
         
         
-//        ArrayList<Node> one_hop = new ArrayList<Node>();
-//        ArrayList<Node> second_hop = new ArrayList<Node>();
-//        //nodes in one hop of primary_node 
-//         
-//        for (Node n :  graph.getNeighbors(node_).toArray())
-//        {
-//            one_hop.add(n);
-//            n.setColor(new Color(0x588BAE));
-//        }
-//        
-//        for (Node oh : one_hop)
-//        {
-//            
-//                for(Node sh : graph.getNeighbors(oh))
-//                {
-//                    if(one_hop.contains(sh)==false)
-//                    {
-//                        
-//                        sh.setColor(new Color(0xC2DFFF));
-//                    }
-//                
-//                }
-//        }
+        ArrayList<Node> one_hop = new ArrayList<Node>();
+        ArrayList<Node> second_hop = new ArrayList<Node>();
+        //nodes in one hop of primary_node 
+         
+        for (Node n :  graph.getNeighbors(node_).toArray())
+        {
+            one_hop.add(n);
+            n.setColor(new Color(0x588BAE));
+        }
+        
+        for (Node oh : one_hop)
+        {
+            
+                for(Node sh : graph.getNeighbors(oh))
+                {
+                    if(one_hop.contains(sh)==false)
+                    {
+                        
+                        sh.setColor(new Color(0xC2DFFF));
+                    }
+                
+                }
+        }
     
      
         

@@ -28,11 +28,14 @@ public class Main {
         //BatchEgo batchego = new BatchEgo();
         //batchego.script("/org/gephi/toolkit/demos/total.gexf","/home/sid/Desktop/CODE/Internship-Indian-Institute-of-Science/COVID IISc/gephi_graphs/");
         
-        //BatchEgoCSV batchegocsv = new BatchEgoCSV();
+       // BatchEgoCSV batchegocsv = new BatchEgoCSV();
         //batchegocsv.script();
         
-        singleEgoCSV s = new singleEgoCSV();
-        s.script();
+         
+        SingleEgoCSVBatch s = new SingleEgoCSVBatch();
+        s.batcher("/home/sid/Desktop/CODE/Internship-Indian-Institute-of-Science/COVID IISc/gephi-toolkit-demos/src/main/resources/org/gephi/toolkit/demos/one_hop_node_folders");
+        
+
         
     }
 }
